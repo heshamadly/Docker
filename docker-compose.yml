@@ -1,35 +1,29 @@
-version: "3.9"
+version: '2'
+# NOTE: move this answer file up a directory so it'll work
+
 services:
-  hesham_db:
-   container_name: mysql_db
-   image: mysql:5.7
-   restart: always
-   environment:
-    MYSQL_ROOT_PASSWORD: heshampass
-    MYSQL_DATABASE: word_db
-    MYSQL_USER: user
-    MYSQL_PASSWORD: 12345678
-   volumes:
-    - mysql_vol:/var/lib/mysql
 
-
-  wordpress:
-   image: wordpress
-   restart: always
-   depends_on:
-    - hesham_db
-   container_name: wordpress_container
-   restart: always
-   ports:
-    - "80:80"
-   environment:
-    WORDPRESS_DB_HOST: hesham_db
-    WORDPRESS_DB_USER: user
-    WORDPRESS_DB_PASSWORD: 12345678
-    WORDPRESS_DB_NAME: word_db
-   volumes:
-    - .:/var/www/html
-
+  drupal:
+    image: custom-drupal
+    build: .
+    ports:
+      - "8020:80"
+    volumes:
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiles       
+      - drupal-sites:/var/www/html/sites      
+      - drupal-themes:/var/www/html/themes
+ 
+  postgres:
+    image: postgres:12.1
+    environment:
+      - POSTGRES_PASSWORD=mypasswd
+    volumes:
+      - drupal-data:/var/lib/postgresql/data
 
 volumes:
-    mysql_vol:
+  drupal-data:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
