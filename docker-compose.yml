@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  hesham_db:
+   container_name: mysql_db
+   image: mysql:5.7
+   restart: always
+   environment:
+    MYSQL_ROOT_PASSWORD: heshampass
+    MYSQL_DATABASE: word_db
+    MYSQL_USER: user
+    MYSQL_PASSWORD: 12345678
+   volumes:
+    - mysql_vol:/var/lib/mysql
+
+
+  wordpress:
+   image: wordpress
+   restart: always
+   depends_on:
+    - hesham_db
+   container_name: wordpress_container
+   restart: always
+   ports:
+    - "80:80"
+   environment:
+    WORDPRESS_DB_HOST: hesham_db
+    WORDPRESS_DB_USER: user
+    WORDPRESS_DB_PASSWORD: 12345678
+    WORDPRESS_DB_NAME: word_db
+   volumes:
+    - .:/var/www/html
+
+
+volumes:
+    mysql_vol:
